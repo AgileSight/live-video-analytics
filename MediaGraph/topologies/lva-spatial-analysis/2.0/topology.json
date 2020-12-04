@@ -1,5 +1,5 @@
 {
-    "@apiVersion": "1.0",
+    "@apiVersion": "2.0",
     "name": "InferencingWithCVExtension",
     "properties": {
       "description": "Analyzing Live Video with Computer Vision for Spatial Analysis",
@@ -26,12 +26,6 @@
           "type": "String",
           "description": "inferencing Url",
           "default": "tcp://spatialAnalysis:50051"
-        },
-        {
-          "name": "frameRate",
-          "type": "String",
-          "description": "Limit the rate of the frames per second to send to the computerVisionExtension.",
-          "default": "2"
         },
         {
           "name": "spatialanalysisusername",
@@ -64,16 +58,6 @@
       ],
       "processors": [
         {
-          "@type": "#Microsoft.Media.MediaGraphFrameRateFilterProcessor",
-          "name": "frameRateFilter",
-          "inputs": [
-            {
-              "nodeName": "rtspSource"
-            }
-          ],
-          "maximumFps": "${frameRate}"
-        },
-        {
           "@type": "#Microsoft.Media.MediaGraphCognitiveServicesVisionExtension",
           "name": "computerVisionExtension",
           "endpoint": {
@@ -96,9 +80,20 @@
               "pixelFormat": "bgr24"
             }
           },
+          "samplingOptions": {
+            "skipSamplesWithoutAnnotation": "false",
+            "maximumSamplesPerSecond": "20"
+            },
           "inputs": [
             {
-              "nodeName": "frameRateFilter"
+              "nodeName": "rtspSource",
+              "outputSelectors": [
+              {
+                "property": "mediaType",
+                "operator": "is",
+                "value": "video"
+              }
+              ]
             }
           ]
         },
@@ -125,11 +120,18 @@
             "name": "assetSink",
             "assetNamePattern": "sampleAssetFromEVR-CV-LVAEdge-${System.DateTime}",
             "segmentLength": "PT30S",
-            "LocalMediaCacheMaximumSizeMiB": "200",
+            "localMediaCacheMaximumSizeMiB": "200",
             "localMediaCachePath": "/var/lib/azuremediaservices/tmp/",
             "inputs": [
                 {
-                    "nodeName": "signalGateProcessor"
+                    "nodeName": "signalGateProcessor",
+                    "outputSelectors": [
+                    {
+                      "property": "mediaType",
+                      "operator": "is",
+                      "value": "video"
+                    }
+                    ]
                 }
             ]
         },

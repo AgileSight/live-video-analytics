@@ -1,5 +1,5 @@
 {
-  "@apiVersion": "1.0",
+  "@apiVersion": "2.0",
   "name": "InferencingWithHttpExtension",
   "properties": {
     "description": "Analyzing live video using HTTP Extension to send images to an external inference engine",
@@ -40,12 +40,6 @@
         "default": "dummyPassword"
       },
       {
-        "name": "imageEncoding",
-        "type": "String",
-        "description": "image encoding for frames",
-        "default": "bmp"
-      },
-      {
         "name": "imageScaleMode",
         "type": "String",
         "description": "image scaling mode",
@@ -62,12 +56,6 @@
         "type": "String",
         "description": "Height of the video frame to be received from LVA.",
         "default": "416"
-      },
-      {
-        "name": "frameRate",
-        "type": "String",
-        "description": "Rate of the frames per second to be received from LVA.",
-        "default": "2"
       }
     ],
     "sources": [
@@ -88,16 +76,6 @@
     ],
     "processors": [
       {
-        "@type": "#Microsoft.Media.MediaGraphFrameRateFilterProcessor",
-        "name": "frameRateFilter",
-        "inputs": [
-          {
-            "nodeName": "rtspSource"
-          }
-        ],
-        "maximumFps": "${frameRate}"
-      },
-      {
         "@type": "#Microsoft.Media.MediaGraphHttpExtension",
         "name": "httpExtension",
         "endpoint": {
@@ -116,13 +94,23 @@
             "height": "${frameHeight}"
           },
           "format": {
-            "@type": "#Microsoft.Media.MediaGraphImageFormatEncoded",
-            "encoding": "${imageEncoding}"
+            "@type": "#Microsoft.Media.MediaGraphImageFormatBmp"
           }
+        },
+        "samplingOptions": {
+          "skipSamplesWithoutAnnotation": "false",
+          "maximumSamplesPerSecond": "20"
         },
         "inputs": [
           {
-            "nodeName": "frameRateFilter"
+            "nodeName": "rtspSource",
+            "outputSelectors": [
+            {
+              "property": "mediaType",
+              "operator": "is",
+              "value": "video"
+            }
+            ]
           }
         ]
       }

@@ -1,6 +1,6 @@
-# YOLOv3 ONNX models with gRPC
+# Tiny YOLOv3 ONNX model with gRPC
 
-The following instructions will enable you to build a Docker container with a [YOLOv3](http://pjreddie.com/darknet/yolo/) [ONNX](http://onnx.ai/) model running behind a gRPC endpoint.
+The following instructions will enable you to build a Docker container with a [Tiny YOLOv3](http://pjreddie.com/darknet/yolo/) [ONNX](http://onnx.ai/) model running behind a gRPC endpoint.
 
 
 ## Contributions needed
@@ -19,12 +19,12 @@ To build the container image locally, run the following Docker command from a te
 
 YOLOv3:
 ```bash
-    docker build -f yolov3.dockerfile . -t lvaextension:grpc-yolov3-onnx-v1.0
+    docker build -f Dockerfile . -t lvaextension:grpc-tiny-yolov3-onnx-v1.0
 ```
 
 > <span> [!TIP] </span>  
 > If you do not wish to build the local Dockerfile, you may pull it off of Microsoft Container Registry and skip the following step <br>
-> `docker run --name my_yolo_container -p 8080:80 -d  -i mcr.microsoft.com/lva-utilities/lvaextension:grpc-yolov3-onnx-v1.0`
+> `docker run --name my_tiny_yolo_container -p 8080:80 -d  -i mcr.microsoft.com/lva-utilities/lvaextension:grpc-yolov3-tiny-onnx-v1.0`
 
 ## Running and testing
 Please see [this](https://aka.ms/lva-grpc-quickstart) quickstart.
